@@ -1,5 +1,5 @@
 var inputNum=document.querySelectorAll(".try");
-var resultNum=[];
+var resultNum=new Array(7);
 var countNum=0;
 var clcBtn=document.querySelector("#check");
 var winnerCheck=false;
@@ -7,31 +7,33 @@ var bonusOn=false;
 clcBtn.addEventListener("click",inputChecker);
 
 function inputChecker(){
+    var inputCheckNum=0;
     for(var i=0;i<7;i++){
         for(var j=0;j<i;j++){
             if(inputNum[i].value===inputNum[j].value){
-                alert("서로 다른 숫자를 입력해야합니다!");
-                window.location.reload();
+                inputCheckNum++;
             }
         }
     }
-    numChecker();
+
+    if(inputCheckNum>0){
+        alert("서로 다른 숫자를 입력해야합니다!");
+        window.location.reload();
+    }else numChecker();
 }
 
 function numChecker(){
     for(var i=0;i<7;i++){
-        resultNum[i]=Math.ceil(Math.random()*45);
+        var randomCheckNum=0;
+        var randomNum=parseInt(Math.random()*45)+1;
+        for(var j=0;j<i;j++){
+            if(randomNum===resultNum[j]) randomCheckNum++;
+        }
+        if(randomCheckNum===0) resultNum[i]=randomNum;
+        else i--;
     }
 
-    for(var i=0;i<7;i++){
-        for(var j=0;j<7;j++){
-            if(resultNum[i]===resultNum[j]){
-                if(i===j) continue;
-                resultNum[j]=Math.ceil(Math.random()*45);
-            }
-        }
-    }
-    
+
     for(var i=0;i<6;i++){
         for(var j=0;j<6;j++)
         {
@@ -39,7 +41,7 @@ function numChecker(){
                 countNum++;
             }
         }
-    } // 동시에 같은 수들 모두 입력시 오류발생, 수정요망
+    }
 
     if(countNum===6) winnerCheck=true;
     else if(parseInt(inputNum[6].value)===resultNum[6]) bonusOn=true;
